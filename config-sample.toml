@@ -1,0 +1,13 @@
+# Twitter config
+# follow_userid: User ID of Twitter account to follow
+[twitter]
+follow_userid = ""
+
+# S3 storage config
+# bucket_name: name of the S3 bucket
+# ps4_folder: folder name for PS4 captures
+# switch_folder: folder name for Switch captures
+[s3]
+bucket_name=""
+ps4_folder="ps4"
+switch_folder="switch"
