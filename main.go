@@ -31,6 +31,7 @@ func main() {
 		logger.Error("failed to load config file", zap.String("configFile", configFile), zap.Error(err))
 		log.Fatal(err)
 	}
+	logger.Debug("config loaded", zap.Any("config", config))
 
 	logger.Debug("attempting to load .env file")
 	err = godotenv.Load()
@@ -44,14 +45,15 @@ func main() {
 		ConsumerKey:       os.Getenv("TWITTER_CONSUMER_KEY"),
 		ConsumerSecret:    os.Getenv("TWITTER_CONSUMER_SECRET"),
 	}
-	client, err := newClient(creds)
+	logger.Debug("creating new Twitter client")
+	client, err := newClient(creds, logger)
 	if err != nil {
 		logger.Error("error creating creating client", zap.Error(err))
 		log.Fatal(err)
 	}
 
-	demux := newTwitterStreamDemuxer(tweetHandler)
-	stream, err := newFilteredStream(client, []string{config.Twitter.FollowUserID})
+	demux := newTwitterStreamDemuxer(createTweetHandler(config, logger))
+	stream, err := newFilteredStream(client, []string{config.Twitter.FollowUserID}, logger)
 	if err != nil {
 		logger.Error("error creating filtered stream", zap.Error(err))
 		log.Fatal(err)
@@ -74,6 +76,7 @@ func main() {
 func newLogger() (*zap.Logger, error) {
 	config := zap.NewProductionConfig()
 	config.OutputPaths = []string{"debug.log"}
+	config.Level = zap.NewAtomicLevelAt(zap.DebugLevel)
 	return config.Build()
 }
 
@@ -86,7 +89,7 @@ type Config struct {
 		BucketName   string `toml:"bucket_name"`
 		PS4Folder    string `toml:"ps4_folder"`
 		SwitchFolder string `toml:"switch_folder"`
-	} `toml:"albums"`
+	} `toml:"s3"`
 }
 
 func loadConfig(fn string) (Config, error) {
