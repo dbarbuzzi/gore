@@ -1,6 +1,6 @@
 module github.com/dbarbuzzi/gore
 
-go 1.23.5
+go 1.25.0
 
 require (
 	github.com/BurntSushi/toml v1.2.1
@@ -18,5 +18,5 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
-	golang.org/x/net v0.38.0 // indirect
+	golang.org/x/net v0.55.0 // indirect
 )
